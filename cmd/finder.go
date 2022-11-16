@@ -7,7 +7,7 @@ import (
 	"os/exec"
 )
 
-var findCmd = &cobra.Command{
+var findBigFileCmd = &cobra.Command{
 	Use:   "find_big_file",
 	Short: "$> find / -type f -size +1G  -exec du -h {} \\;",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -22,5 +22,5 @@ var findCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(findCmd)
+	RootCmd.AddCommand(findBigFileCmd)
 }
