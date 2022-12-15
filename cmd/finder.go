@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"log"
+	"os"
 	"os/exec"
 )
 
@@ -18,23 +19,32 @@ var findBigFileCmd = &cobra.Command{
 		fmt.Println("# sudo find / -type f -size +1G -exec du -h {} \\;")
 		fmt.Println("#############################################")
 		execCmd := exec.Command("find", "/", "-type", "f", "-size", "+1G")
-
-		stdout, err := execCmd.StdoutPipe()
+		// way 1 : call Run
+		// (starts the specified command and waits for it to complete.)
+		execCmd.Stdout = os.Stdout
+		execCmd.Stderr = os.Stderr
+		err := execCmd.Run()
 		if err != nil {
 			log.Fatalln(err)
 		}
-		execCmd.Stderr = execCmd.Stdout
-		if err = execCmd.Start(); err != nil {
-			log.Fatalln(err)
-		}
-		for {
-			tmp := make([]byte, 1024)
-			_, err := stdout.Read(tmp)
-			if err != nil {
-				break
-			}
-			fmt.Print(string(tmp))
-		}
+		// way 2 : call Start
+		// ( starts the specified command but does not wait for it to complete and handles the stdout & stderr by self)
+		//stdout, err := execCmd.StdoutPipe()
+		//if err != nil {
+		//	log.Fatalln(err)
+		//}
+		//execCmd.Stderr = execCmd.Stdout
+		//if err = execCmd.Start(); err != nil {
+		//	log.Fatalln(err)
+		//}
+		//for {
+		//	tmp := make([]byte, 1024)
+		//	_, err := stdout.Read(tmp)
+		//	if err != nil {
+		//		break
+		//	}
+		//	fmt.Print(string(tmp))
+		//}
 	},
 }
 
